@@ -5,6 +5,8 @@ using System.Text;
 
 using Xamarin.Forms;
 
+[assembly: Xamarin.Forms.Xaml.XamlCompilation(Xamarin.Forms.Xaml.XamlCompilationOptions.Compile)]
+
 namespace XF_Phoneword
 {
     public partial class App : Application
@@ -13,7 +15,7 @@ namespace XF_Phoneword
         {
             InitializeComponent();
 
-            MainPage = new XF_Phoneword.MainPage();
+            MainPage = new NavigationPage(new XF_Phoneword.MainPage());
         }
 
         protected override void OnStart()

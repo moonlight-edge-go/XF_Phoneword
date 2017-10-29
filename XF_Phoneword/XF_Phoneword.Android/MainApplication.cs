@@ -5,7 +5,7 @@ using Android.OS;
 using Android.Runtime;
 using Plugin.CurrentActivity;
 
-namespace XF_Phoneword.Android
+namespace XF_Phoneword.Droid
 {
 	//You can specify additional application information in this attribute
     [Application]

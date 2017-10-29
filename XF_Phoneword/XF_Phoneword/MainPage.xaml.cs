@@ -6,71 +6,66 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using ZXing.Net.Mobile.Forms;
 
 namespace XF_Phoneword
 {
     public partial class MainPage : ContentPage
     {
-        string translatedNumber;
-
         public MainPage()
         {
             InitializeComponent();
         }
-        void OnTranslate(object sender, EventArgs e)
+        void OpenWebView(object sender, EventArgs e)
         {
-            translatedNumber = Core.PhoneTranslator.ToNumber(phoneNumberText.Text); 
-            if (!string.IsNullOrWhiteSpace(translatedNumber))
+            var inputUrl = url.Text;
+            var webView = new WebView
             {
-                callButton.IsEnabled = true;
-                callButton.Text = "Call " + translatedNumber;
-            }
-            else
-            {
-                callButton.IsEnabled = false;
-                callButton.Text = "Call";
-            }
+                Source = inputUrl
+            };
+            Padding = new Thickness(0, Device.OnPlatform(20, 0, 0), 0, 0);
+            Content = webView;
         }
-
-        async void OnCall(object sender, EventArgs e)
+        async void ReadQR(object sender, EventArgs e)
         {
-            var call = await DisplayAlert(
-                "Dial a Number",
-                "Would you like to call " + translatedNumber + "?",
-                "Yes",
-                "No");
-            if (call)
+            var scanUrl = "";
+            var scanPage = new ZXingScannerPage()
             {
-                try
-                {
-                    var status = await CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Phone);
-                    if (status != PermissionStatus.Granted)
-                    {
-                        if(await CrossPermissions.Current.ShouldShowRequestPermissionRationaleAsync(Permission.Phone))
-                        {
-                            await DisplayAlert("Need Permission", "It will get permission of phonecall", "OK");
-                        }
-                        var results = await CrossPermissions.Current.RequestPermissionsAsync(new[] { Permission.Phone });
-                        status = results[Permission.Phone];
-                    }
-                    if(status == PermissionStatus.Granted)
-                    {
-                        var dialer = DependencyService.Get<IDialer>();
-                        if (dialer != null)
-                            dialer.Dial(translatedNumber);
-                    }
-                    else if(status != PermissionStatus.Unknown)
-                    {
-                        await DisplayAlert("Permission Denied", "Can not continue, try again.", "OK");
-                    }
+                DefaultOverlayTopText = "バーコードを読み取ります",
+                DefaultOverlayBottomText = "",
+            };
+            // スキャナページを表示
+            await Navigation.PushAsync(scanPage);
 
-                }
-                catch(Exception ex)
+            // データが取れると発火
+            scanPage.OnScanResult += (result) =>
+            {
+                // スキャン停止
+                scanPage.IsScanning = false;
+
+                // PopAsyncで元のページに戻り、結果をダイアログで表示
+                Device.BeginInvokeOnMainThread(async () =>
                 {
-                    System.Diagnostics.Debug.WriteLine(ex.InnerException);
-                }
+                    await Navigation.PopAsync();
+                    await DisplayAlert("スキャン完了", result.Text, "OK");
+                    scanUrl = result.Text;
+                    await Navigation.PushAsync(GetWebViewPage(scanUrl));
+                });
                 
-            }
+            };
+           
         }
+
+        private ContentPage GetWebViewPage(string url)
+        {
+            return new ContentPage()
+            {
+                Content = new WebView()
+                {
+                    Source = url
+                }
+            };
+        }
+
     }
 }

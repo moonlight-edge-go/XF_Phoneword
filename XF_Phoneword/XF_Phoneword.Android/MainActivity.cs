@@ -7,7 +7,7 @@ using Android.Views;
 using Android.Widget;
 using Android.OS;
 
-namespace XF_Phoneword.Android
+namespace XF_Phoneword.Droid
 {
     [Activity(Label = "XF_Phoneword", Icon = "@drawable/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
@@ -26,6 +26,7 @@ namespace XF_Phoneword.Android
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
         {
             Plugin.Permissions.PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+            global::ZXing.Net.Mobile.Forms.Android.PermissionsHandler.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
 
     }

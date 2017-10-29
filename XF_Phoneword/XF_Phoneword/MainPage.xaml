@@ -1,24 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage x:Class="XF_Phoneword.MainPage"
              xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="タイトル">
     <ContentPage.Padding>
         <OnPlatform x:TypeArguments="Thickness"
-                    Anroid="10"
+                    Android="10"
                     iOS="10, 30, 10, 10"/>
     </ContentPage.Padding>
     <ContentPage.Content>
         <StackLayout Spacing="15" VerticalOptions="FillAndExpand">
-            <Label Text="Enter a Phoneword:" />
-            <Entry x:Name="phoneNumberText" Text="1-855-XAMARIN"/>
-            <Button x:Name="translateButton"
-                    Clicked="Oncall"
-                    IsEnables="false"
-                    Text="Call"/>
-            <Button x:Name="callButton"
-                    Clicked="OnCall"
-                    IsEnabled="false"
-                    Text="Call"/>
+            <Label Text="Enter a URL:" />
+            <Entry x:Name="url" Text="http://"/>
+            <Button x:Name="goBtn"
+                    Clicked="OpenWebView"
+                    Text="Go"/>
+            <Button x:Name="qrBtn"
+                    Clicked="ReadQR"
+                    Text="Read QRCode"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
